@@ -111,10 +111,12 @@ def build_classifier():
     classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
     classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
-classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, epochs = 100)
-accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10, n_jobs = 1)
+classifier = KerasClassifier(build_fn = build_classifier, batch_size = 32, epochs = 200)
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 5, n_jobs = 1)
 mean = accuracies.mean()
 variance = accuracies.std()
+print ("mean : ", mean)
+print ("variance : ", variance)
 
 # Improving the ANN
 # Dropout Regularization to reduce overfitting if needed
@@ -132,20 +134,25 @@ def build_classifier(optimizer):
     classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     return classifier
 classifier = KerasClassifier(build_fn = build_classifier)
-parameters = {'batch_size': [25, 32],
-              'epochs': [100, 500],
-              'optimizer': ['adam', 'rmsprop']}
+parameters = {'batch_size': [10],
+              'epochs': [1000],
+              'optimizer': ['adam']}
 grid_search = GridSearchCV(estimator = classifier,
                            param_grid = parameters,
                            scoring = 'accuracy',
-                           cv = 10)
+                           cv = 5)
 grid_search = grid_search.fit(X_train, y_train)
 best_parameters = grid_search.best_params_
 best_accuracy = grid_search.best_score_
 
+# best_accuracy = 0.8467499999999999
+# best_parameter = {'batch_size': 25, 'epochs': 500, 'optimizer': 'adam'}
 
+# best_accuracy = 0.84475
+# best_parameter = {'batch_size': 20, 'epochs': 500, 'optimizer': 'adam'}
 
-
+# best_accuracy = 0.845
+# best_parameter = {'batch_size': 20, 'epochs': 1000, 'optimizer': 'adam'}
 
 
 
